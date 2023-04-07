@@ -55,10 +55,6 @@ sad_len = len(sad_text)
 smile_len = len(smile_text)
 
 
-async def rest_text(update, context) -> None:
-    print(f'{update.message.chat.first_name} - {update.message.text}')
-
-
 async def info_button_beaver(update, context) -> None:
     """Выводит кнопки по выбору информации о бобре."""
 
@@ -203,7 +199,6 @@ def main() -> None:
     beaver_emotion_filter = (
         filters.Regex(BEAVER_SMILES_TEXT) | filters.Regex(BEAVER_SAD_TEXT)
         )
-    rest_text_filter = filters.TEXT
     application.add_handlers(
         handlers={-1: [CommandHandler("start", start),
                        MessageHandler(back_filter, start)],
@@ -216,7 +211,6 @@ def main() -> None:
                   3: [MessageHandler(info_beaver_filter, get_info_beaver),
                       MessageHandler(audio_beaver_filter, get_audio_beaver)]}
         )
-    application.add_handler(MessageHandler(rest_text_filter, rest_text))
 
     application.run_polling()
 
