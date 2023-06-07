@@ -3,10 +3,10 @@ import logging
 import json
 from random import randint
 
-from telegram import ReplyKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, Update
 from telegram.ext import (
     Application, CommandHandler,
-    MessageHandler, filters
+    MessageHandler, ContextTypes, filters
     )
 
 from dotenv import load_dotenv
@@ -85,7 +85,8 @@ async def get_info_beaver(update, context) -> None:
     await update.effective_message.reply_text(text)
 
 
-async def audio_button_beaver(update, context) -> None:
+async def audio_button_beaver(update: Update,
+                              context: ContextTypes.DEFAULT_TYPE) -> None:
     """Выводит кнопки по выбору аудио бобра."""
 
     name_buttons_1 = []
@@ -108,13 +109,15 @@ async def audio_button_beaver(update, context) -> None:
     await update.effective_message.reply_text(text, reply_markup=button)
 
 
-async def get_audio_beaver(update, context) -> None:
+async def get_audio_beaver(update: Update,
+                           context: ContextTypes.DEFAULT_TYPE) -> None:
     """Получает аудио бобра и отправляет сообщением."""
     path = f'beaver/audio_beaver/{audio_beaver[update.message.text]}.mp3'
     await update.effective_message.reply_audio(path)
 
 
-async def emotion_beaver(update, context) -> None:
+async def emotion_beaver(update: Update,
+                         context: ContextTypes.DEFAULT_TYPE) -> None:
     """Анализирует нажатие кнопки пользователем и отправляет фото с текстом."""
 
     if update.message.text == BEAVER_SMILES_TEXT:
@@ -133,7 +136,8 @@ async def emotion_beaver(update, context) -> None:
                                                    caption=text)
 
 
-async def wiki_beaver(update, context) -> None:
+async def wiki_beaver(update: Update,
+                      context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет текст и даёт выбор из xx кнопок информации о бобрах."""
 
     text = 'Какую категорию о бобрах выберешь?'
@@ -143,7 +147,8 @@ async def wiki_beaver(update, context) -> None:
     await update.effective_message.reply_text(text, reply_markup=button)
 
 
-async def choosing_beaver(update, context) -> None:
+async def choosing_beaver(update: Update,
+                          context: ContextTypes.DEFAULT_TYPE) -> None:
     """Отправляет текст и даёт выбор из xx кнопок эмоций бобра."""
 
     text = 'Какой же ты бобёр сегодня?'
@@ -153,7 +158,7 @@ async def choosing_beaver(update, context) -> None:
     await update.effective_message.reply_text(text, reply_markup=button)
 
 
-async def start(update, context) -> None:
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """При старте приветсвует и выводит кнопку."""
 
     button = ReplyKeyboardMarkup(
@@ -200,7 +205,7 @@ def main() -> None:
         filters.Regex(BEAVER_SMILES_TEXT) | filters.Regex(BEAVER_SAD_TEXT)
         )
     application.add_handlers(
-        handlers={-1: [CommandHandler("start", start),
+        handlers={-1: [CommandHandler('start', start),
                        MessageHandler(back_filter, start)],
                   1: [MessageHandler(beaver_filter, choosing_beaver),
                       MessageHandler(wiki_button_filter, wiki_beaver)],
